@@ -3,22 +3,22 @@ from utils import nextl, split_st, split_nd
 class Vertice:
 
     def __init__(self, index, label):
-      self.__index = index
-      self.__label = label
+        self.__index = index
+        self.__label = label
 
     def __str__(self) -> str:
-       return "índice: {}, nome: {}".format(self.__index, self.__label)
+        return "índice: {}, nome: {}".format(self.__index, self.__label)
        
     def __repr__(self) -> str:
-       return "índice: {}, nome: {}".format(self.__index, self.__label)
+        return "índice: {}, nome: {}".format(self.__index, self.__label)
 
     @property
     def index(self):
-      return self.__index
+        return self.__index
 
     @property
     def label(self):
-      return self.__label
+        return self.__label
 
 class Graph:
 
@@ -46,54 +46,56 @@ class Graph:
             self.__add_edges(lines)
 
     def __add_edges(self, lines):
-      # leitura das arestas
-      for line in lines:
-              
-          u, v, w = split_nd(line)
-          u, v, w = int(u) - 1, int(v) - 1, float(w)
-          # adiciona a aresta (u, v) ao grafo
-          self.__edges[frozenset((u, v))] = w
-          # adiciona v aos vizinhos de u
-          self.__neighbors[u].add(v)
-          # adiciona u aos vizinhos de v
-          self.__neighbors[v].add(u)
+        # leitura das arestas
+        for line in lines:
+                
+            u, v, w = split_nd(line)
+            u, v, w = int(u) - 1, int(v) - 1, float(w)
+            # adiciona a aresta (u, v) ao grafo
+            self.__edges[frozenset((u, v))] = w
+            # adiciona v aos vizinhos de u
+            self.__neighbors[u].add(v)
+            # adiciona u aos vizinhos de v
+            self.__neighbors[v].add(u)
 
     def neighbors(self, u : int) -> list:
-       return list(self.__neighbors[u - 1])
+        return list(self.__neighbors[u - 1])
     
-    def w(self, u: int, v: int) -> float:
-       
-       if v in self.__neighbors[u]:
-          return self.__edges[frozenset(u, v)]
-       
-       return float('inf')
+    def w(self, e : (int, int)) -> float:
+        u, v = e
+        
+        if v in self.__neighbors[u]:
+            return self.__edges[frozenset(u, v)]
+        
+        return float('inf')
        
     @property
     def vertices(self):
-       return self.__vertices
+         return self.__vertices
     
     @property
     def edges(self):
-       return self.__edges
+        return (e for e in self.__edges)
        
 class DiGraph(Graph):
     
     def __init__(self, lines : list, n : int):
-       super().__init__(lines, n)
+        super().__init__(lines, n)
 
     def __add_edges(self, lines):
-      # leitura dos arcos
-      for u, v, w in lines:
-              
-          u, v, w = int(u) - 1, int(v) - 1, float(w)
-          # adiciona o arco (u, v) ao grafo
-          self.__edges[(u, v)] = w
-          # adiciona v aos vizinhos de u
-          self.__neighbors[u].add(v)
+        # leitura dos arcos
+        for u, v, w in lines:
+                
+            u, v, w = int(u) - 1, int(v) - 1, float(w)
+            # adiciona o arco (u, v) ao grafo
+            self.__edges[(u, v)] = w
+            # adiciona v aos vizinhos de u
+            self.__neighbors[u].add(v)
    
-    def w(self, u: int, v: int) -> float:
-       
-       if v in self.__neighbors[u]:
-          return self.__edges[(u, v)]
-       
-       return float('inf')
+    def w(self, e : (int, int)) -> float:
+        u, v = e
+        
+        if v in self.__neighbors[u]:
+            return self.__edges[(u, v)]
+        
+        return float('inf')

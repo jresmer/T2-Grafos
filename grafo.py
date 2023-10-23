@@ -25,38 +25,40 @@ class Graph:
     def __init__(self, lines : list, n : int):
         self.__vertices = set()
         self.__edges = dict()
+        self.__V = None
         self.__neighbors = None
 
         if lines:
             # inicializa a estrutura que mapeia os vizinhos
             self.__neighbors = [set()] * n
+            self.__V = [None] * n
 
             # leitura dos vértices
-            for _ in range(n-1):
+            for _ in range(n):
                 # lê uma linha
                 v, label = split_st(lines[0])
                 # adiciona um vértice ao seu conjunto V
-                self.__vertices.add(Vertice(int(v), label))
+                self.__vertices.add(int(v))
+                self.__V[int(v) - 1] = Vertice(int(v), label.strip()[1:-1])
                 # passa uma linha
                 nextl(lines)
 
             nextl(lines)
-            nextl(lines)
 
-            self.__add_edges(lines)
+            self._add_edges(lines)
 
-    def __add_edges(self, lines):
+    def _add_edges(self, lines):
         # leitura das arestas
         for line in lines:
                 
             u, v, w = split_nd(line)
-            u, v, w = int(u) - 1, int(v) - 1, float(w)
+            u, v, w = int(u), int(v), float(w)
             # adiciona a aresta (u, v) ao grafo
             self.__edges[frozenset((u, v))] = w
             # adiciona v aos vizinhos de u
-            self.__neighbors[u].add(v)
+            self.__neighbors[u-1].add(v)
             # adiciona u aos vizinhos de v
-            self.__neighbors[v].add(u)
+            self.__neighbors[v-1].add(u)
 
     def neighbors(self, u : int) -> list:
         return list(self.__neighbors[u - 1])
@@ -64,10 +66,16 @@ class Graph:
     def w(self, e : (int, int)) -> float:
         u, v = e
         
-        if v in self.__neighbors[u]:
-            return self.__edges[frozenset(u, v)]
+        if v in self.neighbors(u):
+            return self.__edges[frozenset((u, v))]
         
         return float('inf')
+    
+    def vertice(self, v : int) -> Vertice:
+        if v in self.__vertices:
+            return self.__V[v-1]
+        
+        return None
        
     @property
     def vertices(self):
@@ -82,20 +90,24 @@ class DiGraph(Graph):
     def __init__(self, lines : list, n : int):
         super().__init__(lines, n)
 
-    def __add_edges(self, lines):
+    def _add_edges(self, lines):
         # leitura dos arcos
-        for u, v, w in lines:
+        for line in lines:
                 
-            u, v, w = int(u) - 1, int(v) - 1, float(w)
+            u, v, w = split_nd(line)
+            u, v, w = int(u), int(v), float(w)
             # adiciona o arco (u, v) ao grafo
-            self.__edges[(u, v)] = w
+            self._Graph__edges[(u, v)] = w
             # adiciona v aos vizinhos de u
-            self.__neighbors[u].add(v)
+            if not self._Graph__neighbors[u-1]:
+                self._Graph__neighbors[u-1] = set((v,))
+            else:
+                self._Graph__neighbors[u-1].add(v)
    
     def w(self, e : (int, int)) -> float:
         u, v = e
         
-        if v in self.__neighbors[u]:
-            return self.__edges[(u, v)]
+        if v in self.neighbors(u):
+            return self._Graph__edges[(u, v)]
         
         return float('inf')

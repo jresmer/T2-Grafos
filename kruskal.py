@@ -4,7 +4,7 @@ def kruskal(G):
     A = set()
     # subárvores
     S = [set()] * len(G.vertices)
-    for v in G.vertices: S[v.index - 1] = set((v.index, ))
+    for v in G.vertices: S[v - 1] = set((v, ))
     # arestas (ordenadas)
     E_ = sorted(G.edges, key=G.w)
 

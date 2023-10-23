@@ -1,0 +1,2 @@
+def cfc(G):
+    pass

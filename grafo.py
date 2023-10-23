@@ -62,8 +62,6 @@ class Graph:
        return list(self.__neighbors[u - 1])
     
     def w(self, u: int, v: int) -> float:
-      
-       u -= 1
        
        if v in self.__neighbors[u]:
           return self.__edges[frozenset(u, v)]
@@ -94,8 +92,6 @@ class DiGraph(Graph):
           self.__neighbors[u].add(v)
    
     def w(self, u: int, v: int) -> float:
-      
-       u -= 1
        
        if v in self.__neighbors[u]:
           return self.__edges[(u, v)]

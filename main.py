@@ -1,18 +1,19 @@
 import sys
 from grafo import Graph, DiGraph
+from utils import nextl
 
 def read(file_path: str) -> Graph or DiGraph:
 
     with open(file_path) as f:
 
-        lines = iter(f)
+        lines = list(iter(f))
 
         # lê o número de vértices contidos no grafo
-        n = int((lines[0].split())[-1])
+        n = int((list(lines)[0].split())[-1])
         # passa a primeira linha da lista
-        next(lines, None)
+        nextl(lines)
 
-        return Graph(lines, n) if lines[n].strip() == "*egdes" else DiGraph(lines, n)
+        return Graph(lines, n) if list(lines)[n].strip() == "*egdes" else DiGraph(lines, n)
     
 def main():
     if __name__ == "__main__":
@@ -23,3 +24,5 @@ def main():
         directory = sys.argv[1]
 
         G = read(directory)
+
+main()

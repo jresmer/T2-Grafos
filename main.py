@@ -26,19 +26,25 @@ def main():
         if len(sys.argv) == 1:
             
             # 1) Componentes fortemente conexas
+            print("1) Componentes fortemente conexas")
             directory = path.join("instances", "arvore_geradora_minima", "agm_tiny.net")
             G = read(directory)
             cfc_output(G)
+            print()
 
             # 2) Ordenação topologica
+            print("2) Ordenação topologica")
             directory = path.join("instances", "extras", "ot_tiny.net")
             G = read(directory)
             ot_output(G)
+            print()
 
             # 3) Árvore geradora mínima (Kruskal)
+            print("2) Ordenação topologica")
             directory = path.join("instances", "arvore_geradora_minima", "agm_tiny.net")
             G = read(directory)
             kruskal_output(G)
+            print()
 
         # execução: "Usage: python3 main.py [Directory] [algorithm]"
         elif len(sys.argv) == 3:

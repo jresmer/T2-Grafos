@@ -181,8 +181,6 @@ class DiGraph(Graph):
         # inverte os arcos
         for e in self._Graph__edges:
 
-            print(e)
-
             w = self.w(e)
             G_.remove_edge(e)
             G_.add_edge((e[1], e[0]), w)

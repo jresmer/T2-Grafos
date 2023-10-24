@@ -6,8 +6,6 @@ def cfc(G):
     # primeira busca em profundidade
     A, F = dfs(G)
 
-    print("A: {}".format(A))
-
     Gt = G.reversed()
 
     # # inicializa grafo sem vértices
@@ -36,15 +34,9 @@ def dfs_visit(G, v, C, F, A):
     # u é marcado como visitado
     C[v-1] = True
 
-    print("vizinhos de {}: {}".format(v, G.neighbors(v)))
-
     for u in G.neighbors(v):
 
-        #print("{} tentou aqui".format(v))
-
         if not C[u-1]:
-
-            #print("{} passou aqui".format(v))
 
             A[u-1] = v
             dfs_visit(G, u, C, F, A)
@@ -75,10 +67,6 @@ def dfs_adapted(G, F):
 
     n_vertices = len(G.vertices)
 
-    print("Gt vertices: {}".format(list(G.vertices)))
-    print("Gt edges: {}".format(list(G.edges)))
-    print("pilha: {}".format(F))
-
     # vértices visitados
     C = [False] * n_vertices
     # antecessores
@@ -88,11 +76,7 @@ def dfs_adapted(G, F):
 
         if not C[u-1]:
 
-            #print("{} passou".format(u))
-
             dfs_visit(G, u, C, F, A)
-
-            print("A: {}".format(A))
     
     return A
 
@@ -131,7 +115,6 @@ def cfc_output(G):
             lines[-1].append(u)
             u = A[u-1]
 
-    print(lines)
 
     for line in lines:
 

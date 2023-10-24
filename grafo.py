@@ -1,3 +1,4 @@
+from copy import deepcopy
 from utils import nextl, split_st, split_nd
 
 class Vertice:
@@ -22,11 +23,11 @@ class Vertice:
 
 class Graph:
 
-    def __init__(self, lines : list, n : int):
+    def __init__(self, lines : list=[], n : int=0):
         self.__vertices = set()
         self.__edges = dict()
-        self.__V = None
-        self.__neighbors = None
+        self.__V = list()
+        self.__neighbors = list()
 
         if lines:
             # inicializa a estrutura que mapeia os vizinhos
@@ -56,9 +57,15 @@ class Graph:
             # adiciona a aresta (u, v) ao grafo
             self.__edges[frozenset((u, v))] = w
             # adiciona v aos vizinhos de u
-            self.__neighbors[u-1].add(v)
+            if not self.__neighbors[u-1]:
+                self.__neighbors[u-1] = set((v,))
+            else:
+                self.__neighbors[u-1].add(v)
             # adiciona u aos vizinhos de v
-            self.__neighbors[v-1].add(u)
+            if not self.__neighbors[v-1]:
+                self.__neighbors[v-1] = set((u,))
+            else:
+                self.__neighbors[v-1].add(u)
 
     def neighbors(self, u : int) -> list:
         return list(self.__neighbors[u - 1])
@@ -84,10 +91,47 @@ class Graph:
     @property
     def edges(self):
         return (e for e in self.__edges)
-       
+    
+    def get_labels(self):
+        return (v.label for v in self.__V)
+    
+    def add_edge(self, e : (int, int), w : int=0):
+
+        if e[0] in self.__vertices and e[1] in self.__vertices:
+            # adiciona a aresta ao grafo
+            self.__edges[frozenset(e)] = w
+            # atualiza os vizinhos do vértice e0
+            if not self.__neighbors[e[0]-1]:
+                self.__neighbors[e[0]-1] = set((e[1],))
+            else:
+                self.__neighbors[e[0]-1].add(e[1])
+            # atualiza os vizinhos do vértice e1
+            if not self.__neighbors[e[1]-1]:
+                self.__neighbors[e[1]-1] = set((e[0],))
+            else:
+                self.__neighbors[e[1]-1].add(e[0])
+
+    def remove_edge(self, e):
+
+        if e[0] in self.__vertices and e[1] in self.neighbors(e[0]):
+
+            # retira a aresta do grafo
+            del self.__edges[frozenset(e)]
+            # atualiza os vizinhos de ambos os vértices
+            self.__neighbors[e[0]-1].remove(e[1])
+            self.__neighbors[e[1]-1].remove(e[0])
+
+    def add_vetice(self, label : str):
+
+        # adiciona um vértive ao grafo
+        self.__vertices.add(len(self.__vertices)+1)
+        self.__V.append(Vertice(len(self.__vertices)+1, label))
+        self.__neighbors.append(set())
+
+
 class DiGraph(Graph):
     
-    def __init__(self, lines : list, n : int):
+    def __init__(self, lines : list=[], n : int=0):
         super().__init__(lines, n)
 
     def _add_edges(self, lines):
@@ -111,3 +155,36 @@ class DiGraph(Graph):
             return self._Graph__edges[(u, v)]
         
         return float('inf')
+    
+    def add_edge(self, e : (int, int), w : int=0):
+
+        if e[0] in self._Graph__vertices and e[1] in self._Graph__vertices:
+            # adiciona a aresta ao grafo
+            self._Graph__edges[e] = w
+            # atualiza os vizinhos do vértice e0
+            if not self._Graph__neighbors[e[0]-1]:
+                self._Graph__neighbors[e[0]-1] = set((e[1],))
+            else:
+                self._Graph__neighbors[e[0]-1].add(e[1])
+
+    def remove_edge(self, e):
+
+        if e[0] in self._Graph__vertices and e[1] in self.neighbors(e[0]):
+
+            # retira a aresta do grafo
+            del self._Graph__edges[e]
+            # atualiza os vizinhos de ambos os vértices
+            self._Graph__neighbors[e[0]-1].remove(e[1])
+    
+    def reversed(self):
+        G_ = deepcopy(self)
+        # inverte os arcos
+        for e in self._Graph__edges:
+
+            print(e)
+
+            w = self.w(e)
+            G_.remove_edge(e)
+            G_.add_edge((e[1], e[0]), w)
+
+        return G_
